@@ -1,0 +1,92 @@
+# Decimal_lib
+---
+In this project we implemented our own s21_decimal.h library in the C programming language. 
+
+This library adds the ability to work with the "decimal" type, which is not in the language standard. Nevertheless, this type is critically important. For financial calculations, for example, where errors of calculations characteristic of types with floating point are unacceptable. 
+
+An educational group project, the purpose of which is to teach the tasks of processing financial information, internal representation of different types of data and solidify knowledge of structured programming.
+
+
+#### Overview:
+---
+
+The Decimal value type represents decimal numbers ranging from positive 79,228,162,514,264,337,593,543,950,335 to negative 79,228,162,514,264,337,593,543,950,335. 
+
+ The Decimal type does not eliminate the need for rounding. Rather, it minimizes errors due to rounding.
+When the result of the division and multiplication is passed to the Round method, the result suffers no loss of precision.
+A decimal number is a floating-point value that consists of a sign, a numeric value where each digit in the value ranges from 0 to 9, and a scaling factor that indicates the position of a floating decimal point that separates the integral and fractional parts of the numeric value.
+The binary representation of a Decimal value consists of a 1-bit sign, a 96-bit integer number, and a scaling factor used to divide the 96-bit integer and specify what portion of it is a decimal fraction. The scaling factor is implicitly the number 10, raised to an exponent ranging from 0 to 28. Therefore, the binary representation of a Decimal value the form, ((-2^96 to 2^96) / 10^(0 to 28)), where -(2^96-1) is equal to MinValue, and 2^96-1 is equal to MaxValue.
+The scaling factor also can preserve any trailing zeros in a Decimal number. Trailing zeros do not affect the value of a Decimal number in arithmetic or comparison operations.
+
+#### Arithmetic Operators:
+| Operator name | Operators  | Function                                                                           | 
+| ------ | ------ |------------------------------------------------------------------------------------|
+| Addition | + | int s21_add(s21_decimal value_1, s21_decimal value_2, s21_decimal *result)         |
+| Subtraction | - | int s21_sub(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) |
+| Multiplication | * | int s21_mul(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) | 
+| Division | / | int s21_div(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) |
+| Modulo | Mod | int s21_mod(s21_decimal value_1, s21_decimal value_2, s21_decimal *result) |
+
+The functions return the error code:
+- 0 - OK
+- 1 - the number is too large or equal to infinity
+- 2 - the number is too small or equal to negative infinity
+- 3 - division by 0
+
+**Note**:
+- *When getting numbers that do not fit into the mantissa during arithmetic operations, the bank rounding is used; *
+- *If an overflow occurred as a result, the fractional part is discarded*
+
+
+
+#### Comparison Operators:
+| Operator name | Operators  | Function | 
+| ------ | ------ | ------ |
+| Less than | < | int s21_is_less(s21_decimal, s21_decimal) |
+| Less than or equal to | <= | int s21_is_less_or_equal(s21_decimal, s21_decimal) | 
+| Greater than | > |  int s21_is_greater(s21_decimal, s21_decimal) |
+| Greater than or equal to | >= | int s21_is_greater_or_equal(s21_decimal, s21_decimal) | 
+| Equal to | == |  int s21_is_equal(s21_decimal, s21_decimal) |
+| Not equal to | != |  int s21_is_not_equal(s21_decimal, s21_decimal) |
+Return value:
+- 0 - FALSE
+- 1 - TRUE
+
+#### Convertors and parsers
+| Convertor/parser | Function | 
+| ------ | ------ |
+| From int  | int s21_from_int_to_decimal(int src, s21_decimal *dst) |
+| From float  | int s21_from_float_to_decimal(float src, s21_decimal *dst) |
+| To int  | int s21_from_decimal_to_int(s21_decimal src, int *dst) |
+| To float  | int s21_from_decimal_to_float(s21_decimal src, float *dst) |
+Return value - code error:
+- 0 - OK
+- 1 - convertation error
+
+**Note**:
+- *If the numbers are too small (0 < |x| < 1e-28), an error and value equal to 0 are returned*
+- *If the numbers are too large (|x| > 79,228,162,514,264,337,593,543,950,335) or are equal to infinity, an error is returned*
+- *If there is a fractional part in a decimal number, it would be discarded (for example, 0.9 is converted to 0)*
+
+#### Another functions
+| Description | Function                                                         | 
+| ------ |------------------------------------------------------------------|
+| Rounds a specified Decimal number to the closest integer toward negative infinity. | int s21_floor(s21_decimal value, s21_decimal *result)            | 
+| Rounds a decimal value to the nearest integer. | int s21_round(s21_decimal value, s21_decimal *result)    |
+| Returns the integral digits of the specified Decimal; any fractional digits are discarded, including trailing zeroes. | int s21_truncate(s21_decimal value, s21_decimal *result) |
+| Returns the result of multiplying the specified Decimal value by negative one. | int s21_negate(s21_decimal value, s21_decimal *result)   |
+Return value - code error:
+- 0 - OK
+- 1 - calculation error
+
+#### library Build: 
+---
+> $ cd src
+> $ make
+
+#### Technological description:
+---
+- The library was implemented in C language of C11 standard using gcc compiler. Based on the POSIX.1-2017 standard. The library developed according to the principles of structured programming
+- Full coverage of library functions code with unit-tests with the Check library
+- Supported systems: Linux-based systems and macOS
+
